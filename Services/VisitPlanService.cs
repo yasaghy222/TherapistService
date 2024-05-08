@@ -22,7 +22,7 @@ public class VisitPlanService(TherapistServiceContext context,
 	public async Task<Result> GetAll(VisitPlanFilterDto model)
 	{
 		ValidationResult validationResult = _filterValidator.Validate(model);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 			return CustomErrors.InvalidData(validationResult.Errors);
 
 		bool isTherapistExist = await _context.Therapists.AnyAsync(d => d.Id == model.TherapistId);
@@ -40,7 +40,7 @@ public class VisitPlanService(TherapistServiceContext context,
 	public async Task<Result> Add(VisitPlanDto model)
 	{
 		ValidationResult validationResult = _dataValidator.Validate(model);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 			return CustomErrors.InvalidData(validationResult.Errors);
 
 		try
@@ -61,7 +61,7 @@ public class VisitPlanService(TherapistServiceContext context,
 	public async Task<Result> Edit(VisitPlanDto model)
 	{
 		ValidationResult validationResult = _dataValidator.Validate(model);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 			return CustomErrors.InvalidData(validationResult.Errors);
 
 		if (model.Id == null)

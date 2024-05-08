@@ -20,7 +20,7 @@ public class ClinicService(TherapistServiceContext context,
 	public async Task<Result> Add(ClinicDto model)
 	{
 		ValidationResult validationResult = _dataValidator.Validate(model);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 			return CustomErrors.InvalidData(validationResult.Errors);
 
 		try
@@ -41,7 +41,7 @@ public class ClinicService(TherapistServiceContext context,
 	public async Task<Result> Edit(ClinicDto model)
 	{
 		ValidationResult validationResult = _dataValidator.Validate(model);
-		if (validationResult.IsValid)
+		if (!validationResult.IsValid)
 			return CustomErrors.InvalidData(validationResult.Errors);
 
 		if (model.Id == null)

@@ -5,6 +5,7 @@ namespace TherapistService;
 
 public class TherapistDetail
 {
+	public required string ImagePath { get; set; }
 	public Guid Id { get; set; }
 	public required string Name { get; set; }
 	public required string Family { get; set; }

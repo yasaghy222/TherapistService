@@ -4,6 +4,8 @@ namespace TherapistService.Entities;
 
 public class Therapist : BaseEntity
 {
+	public required string ImagePath { get; set; }
+
 	public string Name { get; set; } = "";
 	public string Family { get; set; } = "";
 
@@ -15,7 +17,7 @@ public class Therapist : BaseEntity
 
 	public GenderType Gender { get; set; } = GenderType.Men;
 
-	public required int MedicalSysCode { get; set; }
+	public required int CounselingSysCode { get; set; }
 	public string? Content { get; set; }
 
 	public Guid SpecialtyId { get; set; }

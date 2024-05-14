@@ -12,11 +12,13 @@ using Microsoft.EntityFrameworkCore;
 namespace TherapistService.Services;
 
 public class SpecialtyService(TherapistServiceContext context,
-							  IValidator<SpecialtyDto> dataValidator) : ISpecialtyService, IDisposable
+							  IValidator<AddSpecialtyDto> addValidator,
+							  IValidator<EditSpecialtyDto> editValidator) : ISpecialtyService, IDisposable
 {
 
 	private readonly TherapistServiceContext _context = context;
-	private readonly IValidator<SpecialtyDto> _dataValidator = dataValidator;
+	private readonly IValidator<AddSpecialtyDto> _addValidator = addValidator;
+	private readonly IValidator<EditSpecialtyDto> _editValidator = editValidator;
 
 
 	public async Task<Result> GetAll()
@@ -26,9 +28,9 @@ public class SpecialtyService(TherapistServiceContext context,
 	}
 
 
-	public async Task<Result> Add(SpecialtyDto model)
+	public async Task<Result> Add(AddSpecialtyDto model)
 	{
-		ValidationResult validationResult = _dataValidator.Validate(model);
+		ValidationResult validationResult = _addValidator.Validate(model);
 		if (!validationResult.IsValid)
 			return CustomErrors.InvalidData(validationResult.Errors);
 
@@ -41,7 +43,7 @@ public class SpecialtyService(TherapistServiceContext context,
 
 			//TODO: Add Image With FileStorageModule
 
-			return CustomResults.SuccessCreation(specialty.Adapt<SpecialtyDto>());
+			return CustomResults.SuccessCreation(specialty.Adapt<SpecialtyInfo>());
 		}
 		catch (Exception e)
 		{
@@ -49,14 +51,11 @@ public class SpecialtyService(TherapistServiceContext context,
 		}
 	}
 
-	public async Task<Result> Edit(SpecialtyDto model)
+	public async Task<Result> Edit(EditSpecialtyDto model)
 	{
-		ValidationResult validationResult = _dataValidator.Validate(model);
+		ValidationResult validationResult = _editValidator.Validate(model);
 		if (!validationResult.IsValid)
 			return CustomErrors.InvalidData(validationResult.Errors);
-
-		if (model.Id == null)
-			return CustomErrors.InvalidData("Id not Assigned!");
 
 		Specialty? oldData = await _context.Specialties.SingleOrDefaultAsync(l => l.Id == model.Id);
 		if (oldData == null)
@@ -73,7 +72,7 @@ public class SpecialtyService(TherapistServiceContext context,
 
 			//TODO: Update Image With FileStorageModule
 
-			return CustomResults.SuccessUpdate(specialty.Adapt<LocationDto>());
+			return CustomResults.SuccessUpdate(specialty.Adapt<SpecialtyInfo>());
 		}
 		catch (Exception e)
 		{

@@ -7,6 +7,8 @@ public class EditTherapistValidation : AbstractValidator<EditTherapistDto>
 {
 	public EditTherapistValidation()
 	{
+		RuleFor(d => d.Image).SetValidator(d => new FileValidator<EditTherapistDto>(d.Image));
+
 		RuleFor(d => d.Id).NotEmpty()
 						  .NotNull();
 

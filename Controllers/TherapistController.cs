@@ -47,14 +47,14 @@ public class TherapistController(TherapistServiceContext context,
 	}
 
 	[HttpPut]
-	public async Task<IActionResult> Put(AddTherapistDto model)
+	public async Task<IActionResult> Put([FromForm] AddTherapistDto model)
 	{
 		Result result = await _service.Add(model);
 		return StatusCode(result.StatusCode, result.Data);
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Post(EditTherapistDto model)
+	public async Task<IActionResult> Post([FromForm] EditTherapistDto model)
 	{
 		Result result = await _service.Edit(model);
 		return StatusCode(result.StatusCode, result.Data);

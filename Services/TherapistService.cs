@@ -73,6 +73,7 @@ public class TherapistService(TherapistServiceContext context,
 																												.Where(d => d.Status == TherapistStatus.Confirmed)
 																												.Select(d => new RecommendedTherapist
 																												{
+																													ImagePath = d.ImagePath,
 																													Id = d.Id,
 																													FullName = $"{d.Name} {d.Family}",
 																													SpecialtyTitle = d.Specialty.Title,
@@ -90,10 +91,11 @@ public class TherapistService(TherapistServiceContext context,
 		IQueryable<TherapistInfo> query = from Therapist in _context.Therapists
 										  select new TherapistInfo
 										  {
+											  ImagePath = Therapist.ImagePath,
 											  Name = Therapist.Name,
 											  Family = Therapist.Family,
 											  FullName = $"{Therapist.Name} {Therapist.Family}",
-											  MedicalSysCode = Therapist.MedicalSysCode,
+											  CounselingSysCode = Therapist.CounselingSysCode,
 											  Content = Therapist.Content,
 											  SpecialtyId = Therapist.SpecialtyId,
 											  SpecialtyTitle = Therapist.Specialty.Title,
@@ -140,10 +142,11 @@ public class TherapistService(TherapistServiceContext context,
 		IQueryable<TherapistInfo> query = from Therapist in _context.Therapists
 										  select new TherapistInfo
 										  {
+											  ImagePath = Therapist.ImagePath,
 											  Name = Therapist.Name,
 											  Family = Therapist.Family,
 											  FullName = $"{Therapist.Name} {Therapist.Family}",
-											  MedicalSysCode = Therapist.MedicalSysCode,
+											  CounselingSysCode = Therapist.CounselingSysCode,
 											  Content = Therapist.Content,
 											  SpecialtyId = Therapist.SpecialtyId,
 											  SpecialtyTitle = Therapist.Specialty.Title,

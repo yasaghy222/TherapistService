@@ -7,6 +7,8 @@ public class AddTherapistValidation : AbstractValidator<AddTherapistDto>
 {
 	public AddTherapistValidation()
 	{
+		RuleFor(d => d.Image).SetValidator(d => new FileValidator<AddTherapistDto>(d.Image));
+
 		RuleFor(d => d.Name).NotEmpty()
 							.NotNull()
 							.MaximumLength(100);

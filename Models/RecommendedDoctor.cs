@@ -2,6 +2,7 @@
 
 public class RecommendedTherapist
 {
+	public required string ImagePath { get; set; }
 	public Guid Id { get; set; }
 	public required string FullName { get; set; }
 	public required string SpecialtyTitle { get; set; }

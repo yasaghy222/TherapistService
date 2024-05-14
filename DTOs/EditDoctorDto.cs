@@ -4,6 +4,7 @@ namespace TherapistService.DTOs;
 
 public class EditTherapistDto
 {
+	public IFormFile? Image { get; set; }
 	public Guid Id { get; set; }
 	public required string Name { get; set; }
 	public required string Family { get; set; }

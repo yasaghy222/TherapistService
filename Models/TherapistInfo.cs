@@ -4,11 +4,12 @@ namespace TherapistService.Models;
 
 public class TherapistInfo
 {
+	public required string ImagePath { get; set; }
 	public string Name { get; set; } = "";
 	public string Family { get; set; } = "";
 	public required string FullName { get; set; }
 
-	public required int MedicalSysCode { get; set; }
+	public required int CounselingSysCode { get; set; }
 	public string? Content { get; set; }
 
 	public Guid SpecialtyId { get; set; }

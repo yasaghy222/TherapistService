@@ -1,0 +1,29 @@
+version: '3.8'
+
+networks:
+  healthplus-net:
+
+services:
+  authenticate:
+    container_name: therapist
+    image: dotnet-therapist:0.0
+    environment:
+      - DB_HOST=mssql
+      - DB_NAME=TherapistServiceDB
+      - DB_SA_PASSWORD=Admin@123
+    ports:
+      - "5058:5058"
+    networks:
+      - healthplus-net
+    depends_on:
+      - mssql    
+  mssql:
+    container_name: sql
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Admin@123
+    ports:
+      - "1433:1433"
+    networks:
+      - healthplus-net

@@ -4,21 +4,27 @@ using System.Reflection;
 using TherapistService.Data;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.RegisterMapsterConfiguration();
-builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+WebApplication.CreateBuilder(args).Services.RegisterMapsterConfiguration();
+WebApplication.CreateBuilder(args).Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
-string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<TherapistServiceContext>(options => options.UseSqlServer(connectionString));
+string? defName = WebApplication.CreateBuilder(args).Configuration["Db:Name"];
+string? defHost = WebApplication.CreateBuilder(args).Configuration["Db:Host"];
+string? defPass = WebApplication.CreateBuilder(args).Configuration["Db:Pass"];
+string? dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? defHost;
+string? dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? defName;
+string? dbPass = Environment.GetEnvironmentVariable("DB_SA_PASSWORD") ?? defPass;
 
-builder.Services.AddControllers();
+string? connectionString = $"Server={dbHost}; Persist Security Info=False; TrustServerCertificate=true; User ID=sa;Password={dbPass};Initial Catalog={dbName};";
+WebApplication.CreateBuilder(args).Services.AddDbContext<TherapistServiceContext>(options => options.UseSqlServer(connectionString));
+
+WebApplication.CreateBuilder(args).Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+WebApplication.CreateBuilder(args).Services.AddEndpointsApiExplorer();
+WebApplication.CreateBuilder(args).Services.AddSwaggerGen();
 
-var app = builder.Build();
+var app = WebApplication.CreateBuilder(args).Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -12,5 +12,4 @@ public class EditTherapistDto
 	public required int MedicalSysCode { get; set; }
 	public string? Content { get; set; }
 	public Guid SpecialtyId { get; set; }
-	public TherapistStatus Status { get; set; }
 }

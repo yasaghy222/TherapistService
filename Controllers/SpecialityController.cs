@@ -5,6 +5,7 @@ using TherapistService.Models;
 using Microsoft.AspNetCore.Mvc;
 using TherapistService.Enums;
 using TherapistService.Services;
+using FileService;
 
 namespace TherapistService.Controllers;
 
@@ -12,9 +13,10 @@ namespace TherapistService.Controllers;
 [Route("[controller]")]
 public class SpecialtyController(TherapistServiceContext context,
 							  IValidator<AddSpecialtyDto> addValidator,
-							  IValidator<EditSpecialtyDto> editValidator) : ControllerBase
+							  IValidator<EditSpecialtyDto> editValidator,
+							  IValidator<AddFileDto> fileValidator) : ControllerBase
 {
-	private readonly SpecialtyService _service = new(context, addValidator, editValidator);
+	private readonly SpecialtyService _service = new(context, addValidator, editValidator, fileValidator);
 
 	[HttpGet]
 	public async Task<IActionResult> Get()

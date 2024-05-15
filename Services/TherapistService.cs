@@ -9,14 +9,17 @@ using FluentValidation.Results;
 using Mapster;
 using MedicalHealthPlus.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using FileService;
 
 namespace TherapistService;
 
 public class TherapistService(TherapistServiceContext context,
 						   IValidator<AddTherapistDto> addValidator,
-						   IValidator<EditTherapistDto> editValidator) : ITherapistService, IDisposable
+						   IValidator<EditTherapistDto> editValidator,
+						   IValidator<AddFileDto> fileValidator) : ITherapistService, IDisposable
 {
 	private readonly TherapistServiceContext _context = context;
+	private readonly FileService.FileService _fileService = new(fileValidator);
 	private readonly IValidator<AddTherapistDto> _addValidator = addValidator;
 	private readonly IValidator<EditTherapistDto> _editValidator = editValidator;
 
@@ -195,17 +198,30 @@ public class TherapistService(TherapistServiceContext context,
 		if (!validationResult.IsValid)
 			return CustomErrors.InvalidData(validationResult.Errors);
 
+		Specialty? specialty = await _context.Specialties.SingleOrDefaultAsync(s => s.Id == model.SpecialtyId);
+		if (specialty == null)
+			return CustomErrors.NotFoundData("تخصص انتخاب شده یافت نشد!");
+
+		Therapist therapist = model.Adapt<Therapist>();
+
+
+		Result fileResult = await _fileService.Add(new(therapist.Id, model.Image, "Doctor"));
+		if (!fileResult.Status)
+			return fileResult;
+
+		therapist.ImagePath = fileResult.Data?.ToString() ?? "";
+
 		try
 		{
-			Therapist Therapist = model.Adapt<Therapist>();
-			await _context.Therapists.AddAsync(Therapist);
-
+			await _context.Therapists.AddAsync(therapist);
 			await _context.SaveChangesAsync();
 
-			return CustomResults.SuccessCreation(Therapist.Adapt<TherapistDetail>());
+			therapist.Specialty = specialty;
+			return CustomResults.SuccessCreation(therapist.Adapt<TherapistDetail>());
 		}
 		catch (Exception e)
 		{
+			_fileService.Delete(therapist.ImagePath);
 			return CustomErrors.InternalServer(e.Message);
 		}
 	}
@@ -220,19 +236,32 @@ public class TherapistService(TherapistServiceContext context,
 		if (oldData == null)
 			return CustomErrors.NotFoundData();
 
+		string oldPath = oldData.ImagePath;
+		_context.Entry(oldData).State = EntityState.Detached;
+		oldData = model.Adapt<Therapist>();
+		oldData.ImagePath = oldPath;
+
+		if (model.Image != null)
+		{
+			Result fileResult = await _fileService.Add(new(oldData.Id, model.Image, "Therapist"));
+			if (!fileResult.Status)
+				return fileResult;
+
+			oldData.ImagePath = fileResult.Data?.ToString() ?? "";
+		}
+
 		try
 		{
-			_context.Entry(oldData).State = EntityState.Detached;
-
-			Therapist Therapist = model.Adapt<Therapist>();
-			_context.Therapists.Update(Therapist);
-
+			_context.Therapists.Update(oldData);
 			await _context.SaveChangesAsync();
 
-			return CustomResults.SuccessUpdate(Therapist.Adapt<TherapistInfo>());
+			return CustomResults.SuccessUpdate(oldData.Adapt<TherapistInfo>());
 		}
 		catch (Exception e)
 		{
+			if (model.Image != null)
+				_fileService.Delete(oldData.ImagePath);
+
 			return CustomErrors.InternalServer(e.Message);
 		}
 	}

@@ -11,12 +11,13 @@ public static class MapsterConfig
 		TypeAdapterConfig<Specialty, SpecialtyInfo>.NewConfig().Map(dto => dto.TherapistIds,
 			s => s.Therapists == null ? null : s.Therapists.Select(d => d.Id).ToArray());
 
+		TypeAdapterConfig<Therapist, TherapistDetail>.NewConfig()
+		.Map(dto => dto.FullName, s => $"{s.Name} {s.Family}")
+		.Map(dto => dto.SpecialtyTitle, s => s.Specialty.Title);
 
-		TypeAdapterConfig<Therapist, TherapistDetail>.NewConfig().Map(dto => dto.SpecialtyTitle,
-			s => s.Specialty.Title);
-
-		TypeAdapterConfig<Therapist, TherapistInfo>.NewConfig().Map(dto => dto.SpecialtyTitle,
-			s => s.Specialty.Title);
+		TypeAdapterConfig<Therapist, TherapistInfo>.NewConfig()
+		.Map(dto => dto.FullName, s => $"{s.Name} {s.Family}")
+		.Map(dto => dto.SpecialtyTitle, s => s.Specialty.Title);
 
 		TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 	}

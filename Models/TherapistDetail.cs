@@ -9,6 +9,7 @@ public class TherapistDetail
 	public Guid Id { get; set; }
 	public required string Name { get; set; }
 	public required string Family { get; set; }
+	public required string FullName { get; set; }
 
 	public string? Phone { get; set; }
 	public bool PhoneValidate { get; set; } = false;

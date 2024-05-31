@@ -92,6 +92,9 @@ public class TherapistService(TherapistServiceContext context,
 	public async Task<Result> GetAllInfo(TherapistFilterDto model)
 	{
 		IQueryable<TherapistInfo> query = from Therapist in _context.Therapists
+										 .Where(d => d.Status == TherapistStatus.Confirmed)
+										.Skip((model.PageIndex - 1) * model.PageSize)
+										.Take(model.PageSize)
 										  select new TherapistInfo
 										  {
 											  ImagePath = Therapist.ImagePath,
@@ -143,6 +146,8 @@ public class TherapistService(TherapistServiceContext context,
 	public async Task<Result> GetAllDetails(TherapistFilterDto model)
 	{
 		IQueryable<TherapistInfo> query = from Therapist in _context.Therapists
+										.Skip((model.PageIndex - 1) * model.PageSize)
+										.Take(model.PageSize)
 										  select new TherapistInfo
 										  {
 											  ImagePath = Therapist.ImagePath,

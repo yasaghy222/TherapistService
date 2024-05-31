@@ -32,11 +32,13 @@ public class TherapistController(TherapistServiceContext context,
 	[HttpGet]
 	[Route("/[controller]/{type}")]
 	public async Task<IActionResult> Get(GetTherapistType type,
+																	[FromQuery] int pageIndex,
+																	[FromQuery] int pageSize,
 																	[FromQuery] TherapistServiceType serviceType,
 																	[FromQuery] TherapistFilterOrder order,
 																	[FromQuery] Guid? locationId)
 	{
-		TherapistFilterDto filterDto = new(serviceType, order, locationId);
+		TherapistFilterDto filterDto = new(pageIndex, pageSize, serviceType, order, locationId);
 
 		Result result = type switch
 		{
